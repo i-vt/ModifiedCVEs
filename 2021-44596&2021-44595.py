@@ -71,14 +71,14 @@ for port in ports_to_scan:
             if enable44595: 
                 try:
                     send_payload_44595(port, payload)
-                    print("[2021-44595] Payload successfully sent to port:", port)
+                    print("[2021-44595] Payload successfully sent to:", target_ip, port)
                 except:
-                    print("[2021-44595] Payload failed to send to port:", port)
+                    print("[2021-44595] Payload failed to send to port:", target_ip, port)
             try:
                 send_payload_44596(port, payload)
-                print("[2021-44596] Payload successfully sent to port:", port)
+                print("[2021-44596] Payload successfully sent to port:", target_ip, port)
             except:
-                print("[2021-44596] Payload failed to send to port:", port)
+                print("[2021-44596] Payload failed to send to port:", target_ip, port)
                
     
         
